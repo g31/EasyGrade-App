@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--Declare page as mobile friendly -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0" />
+    <!-- Declare page as iDevice WebApp friendly -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- iDevice WebApp Splash Screen, Regular Icon, iPhone, iPad, iPod Retina Icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/splash/splash-icon.png">
+    <!-- iPhone 3, 3Gs -->
+    <link rel="apple-touch-startup-image" href="images/splash/splash-screen.png" media="screen and (max-device-width: 320px)" />
+    <!-- iPhone 4 -->
+    <link rel="apple-touch-startup-image" href="images/splash/splash-screen%402x.png" media="(max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2)" />
+    <!-- iPhone 5 -->
+    <link rel="apple-touch-startup-image" sizes="640x1096" href="images/splash/splash-screen%403x.png" />
+
+    <!-- Page Title -->
+    <title>Easy Grade App </title>
+
+    <!-- Stylesheet Load -->
+    <link href="styles/style.css" rel="stylesheet" type="text/css">
+    <link href="styles/framework-style.css" rel="stylesheet" type="text/css">
+    <link href="styles/framework.css" rel="stylesheet" type="text/css">
+    <link href="styles/bxslider.css" rel="stylesheet" type="text/css">
+    <link href="styles/swipebox.css" rel="stylesheet" type="text/css">
+    <link href="styles/icons.css" rel="stylesheet" type="text/css">
+    <link href="styles/retina.css" rel="stylesheet" type="text/css" media="only screen and (-webkit-min-device-pixel-ratio: 2)" />
+
+
+    <!--Page Scripts Load -->
+    <script src="scripts/jquery.min.js" type="text/javascript"></script>
+    <script src="scripts/snap.js" type="text/javascript"></script>
+    <script src="scripts/hammer.js" type="text/javascript"></script>
+    <script src="scripts/jquery-ui-min.js" type="text/javascript"></script>
+    <script src="scripts/subscribe.js" type="text/javascript"></script>
+    <script src="scripts/contact.js" type="text/javascript"></script>
+    <script src="scripts/jquery.swipebox.js" type="text/javascript"></script>
+    <script src="scripts/bxslider.js" type="text/javascript"></script>
+    <script src="scripts/colorbox.js" type="text/javascript"></script>
+    <script src="scripts/retina.js" type="text/javascript"></script>
+    <script src="scripts/custom.js" type="text/javascript"></script>
+    <script src="scripts/framework.js" type="text/javascript"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+   
+
+    <script>
+    $(document).on("pagebeforecreate", function() {
+
+        $.getJSON("http://localhost/cmpe235-master/PHP code/get_course.php", function(data) {
+            var items = [];
+			console.log(JSON.stringify(data));
+            $.each(data, function(key, value) {
+                $("#course").append("<a href='#' onclick='loadStudents(this)' class='dropdown-item bg-light' id='course" + value.ID + "' value='" + value.ID + "'>" + value.CourseName + "</a> ");
+            });
+
+            //$("#course").append("<div class='dropdown-bottom-border'></div>");
+
+            $(".dropdown-item").hide();
+        });
+
+         $("#gradeStatus").hide();
+
+    });
+
+    function loadStudents(event) {
+
+		
+        $(event).parent().find('.dropdown-item').hide();
+        $(event).parent().find('.dropdown-hidden').hide();
+
+        $(event).parent().find('.dropdown-deploy').text(event.innerText);
+        $(event).parent().find('.dropdown-deploy').show();
+
+        var courseId = event.attributes.value.value;
+        var url = "http://localhost/cmpe235-master/PHP code/get_students_by_course.php?courseId=" + courseId;
+
+        $("#CourseId").val(courseId);
+
+        $.getJSON(url, function(data) {
+            var items = [];
+
+            $(".dropdown-item1").remove();
+
+            $.each(data, function(key, value) {
+                $("#student").append("<a href='#' onclick='showStudentInformation(this)' class='dropdown-item1 bg-light' id='student" + value.ID + "' value='" + value.ID + "'>" + value.FirstName + " " + value.LastName + "</a> ");
+            });
+
+            $("#student").append("<div class='dropdown-bottom-border'></div>");
+
+            $(".dropdown-item").hide();
+        });
+
+
+        return false;
+    };
+
+    function showStudentInformation(student) {
+
+        $(student).parent().find('.dropdown-item1').hide();
+        $(student).parent().find('.dropdown-hidden').hide();
+
+        $(student).parent().find('.dropdown-deploy').text(student.innerText);
+        $(student).parent().find('.dropdown-deploy').show();
+
+         var studentId = student.attributes.value.value;
+
+         $("#StudentId").val(studentId);
+
+
+        return false;
+
+    };
+	$(function() {
+//alert("Inside signin");
+$("#gradeForm").submit(function(){
+var data = $('#gradeForm').serialize();
+//alert(data);
+$.ajax({
+    url: "http://localhost/cmpe235-master/PHP code/compute_and_save_grade.php",
+    type: "POST",
+    data: data,
+    dataType: 'json',
+    success: function(data) 
+    {  
+  		console.log(data);
+		if(data.error)
+		{
+				$('#err').html(data.error).show();
+		
+		}
+		else {
+			$('#err').html("Students grade is: ").show();
+		 $('#result').html(data.grade).show(); }
+     },
+    error : function(data)
+    {
+		console.log(data);
+        //$(this).dialog("close");
+    }
+    }); 
+    return false; 
+});
+});
+
+    </script>
+
+</head>
+
+<body>
+
+    <div id="preloader">
+        <div id="status">
+            <p class="center-text">
+                Loading the content...
+                <em>Loading depends on your connection speed!</em>
+            </p>
+        </div>
+    </div>
+
+
+
+    <div class="all-elements">
+
+        <div id="sidebar" class="page-sidebar">
+            <div class="page-sidebar-scroll">
+
+                <a href="homepage.html" class="nav-icon home-icon">HOME</a>
+                <a href="grade.html" class="nav-icon blog-icon blog-icon-selected">GRADE</a>
+                <a href="settings.html" class="nav-icon jquery-icon">SETTING</a>
+                <a href="http://demos.jquerymobile.com/1.1.1/" class="nav-icon other-icon">HELP</a>
+                <a href="mail.html" class="nav-icon contact-icon">CONTACT US</a>
+                
+            </div>
+        </div>
+
+        <div id="content" class="page-content">
+            <div class="page-header">
+                <em class="deploy-sidebar"></em>
+                <img class="logo" width="85" />
+            </div>
+
+            <!--<div class="decoration"></div>-->
+            <div class="container no-bottom">
+                <h1 class="center-text">Grade your Students</h1>
+                <p class="center-text"></p>
+            </div>
+
+
+            <div class="decoration"></div>
+
+            <!--Dropdown-->
+
+            <div class="container no-bottom">
+                <h3 class="heading-icon">Course</h3>
+                <p> Please select the course number</p>
+
+                <div class="dropdown-menu" id="course">
+
+                   <a href="#" class="dropdown-deploy"><em class="left-dropdown bg-light"></em>Select Course Number</a>
+                    <a href="#" class="dropdown-hidden"><em class="left-dropdown bg-light"></em>Hide Course Number</a>
+
+                </div>
+
+            </div>
+
+            <div class="decoration"></div>
+
+
+            <!--Dropdown-->
+
+            <div class="container no-bottom">
+                <h3 class="heading-icon">Student</h3>
+                <p> Please select the student </p>
+
+                <div class="dropdown-menu" id="student">
+                    <a href="#" class="dropdown-deploy"><em class="left-dropdown bg-light"></em>Select Student</a>
+                    <a href="#" class="dropdown-hidden"><em class="left-dropdown bg-light"></em>Hide Student</a>
+
+
+                </div>
+            </div>
+
+            <div class="decoration"></div>
+
+            <div class="container no-bottom">
+                <div class="toggle-container-v4">
+                    <div class="toggle-v4">
+                        <a href="#" class="show-toggle-v4" style="display: none;">Grade Student!</a>
+                        <a href="#" class="hide-toggle-v4" style="display: block;">Student's Grade Hidden!</a>
+                        <div class="clear"></div>
+                        <div class="toggle-content-v4" style="display: none;">
+                            <div class="toggle-decoration-v4"></div>
+
+                            <form action="http://localhost/cmpe235-master/PHP code/compute_and_save_grade.php" method="post" class="contactForm" id="gradeForm">
+                                <fieldset>
+                                    <div class="formValidationError" id="HomeworkFieldError" style="display: none;">
+                                        <div class="small-notification red-notification no-bottom">
+                                            <p>HOMEWORK IS REQUIRED</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="formValidationError" id="LabsFieldError" style="display: none;">
+                                        <div class="small-notification red-notification no-bottom">
+                                            <p>LAB IS REQUIRED</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="formValidationError" id="ProjectFieldError" style="display: none;">
+                                        <div class="small-notification red-notification no-bottom">
+                                            <p>PROJECT IS REQUIRED</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="formValidationError" id="PresentationFieldError" style="display: none;">
+                                        <div class="small-notification red-notification no-bottom">
+                                            <p>PRESENTATION IS REQUIRED</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="formValidationError" id="MidtermFieldError" style="display: none;">
+                                        <div class="small-notification red-notification no-bottom">
+                                            <p>MIDTERM IS REQUIRED</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="formValidationError" id="FinalFieldError" style="display: none;">
+                                        <div class="small-notification red-notification no-bottom">
+                                            <p>FINAL IS REQUIRED</p>
+                                        </div>
+                                    </div>
+
+									
+                                     <input  name="CourseId"  type="number" style="display:none" id="CourseId">
+                                     <input  name="StudentId" type="number" style="display:none" id="StudentId">
+
+
+                                    <div class="formFieldWrap">
+                                        <label class="field-title gradeTextField" for="HomeworkField"><sup><font color="red">*</font></sup>Homework:
+                                        </label>
+                                        <input  name="Homework" value="" type="number" min="0"  class="gradeField requiredField" id="HomeworkField" placeholder="maximum is 500">
+                                    </div>
+
+                                    <div class="formFieldWrap">
+                                        <label class="field-title gradeTextField" for="LabsField"><sup><font color="red">*</font></sup>Lab:
+                                        </label>
+                                        <input type="number" name="Labs" value="" min="0"  class="gradeField requiredField" id="LabsField" placeholder="maximum is 500">
+                                    </div>
+
+                                    <div class="formFieldWrap">
+                                        <label class="field-title gradeTextField" for="ProjectField"><sup><font color="red">*</font></sup>Project:
+                                        </label>
+                                        <input type="number" name="Project" value="" min="0"  class="gradeField requiredField" id="ProjectField" placeholder="maximum is 200">
+                                    </div>
+
+                                    <div class="formFieldWrap">
+                                        <label class="field-title gradeTextField" for="PresentationField"><sup><font color="red">*</font></sup>Presentation:
+                                        </label>
+                                        <input type="number" name="Presentation" value="" min="0"  class="gradeField requiredField" id="PresentationField" placeholder="maximum is 100">
+                                    </div>
+
+                                    <div class="formFieldWrap">
+                                        <label class="field-title gradeTextField" for="MidtermField"><sup><font color="red">*</font></sup>Midterm:
+                                        </label>
+                                        <input type="number" name="Midterm" value="" min="0"  class="gradeField requiredField" id="MidtermField" placeholder="maximum is 100">
+                                    </div>
+
+                                    <div class="formFieldWrap">
+                                        <label class="field-title gradeTextField" for="FinalField"><sup><font color="red">*</font></sup>Final:
+                                        </label>
+                                        <input type="number" name="Final" value="" min="0"  class="gradeField requiredField" id="FinalField" placeholder="maximum is 100">
+                                    </div>
+
+
+                                    <div class="formSubmitButtonErrorsWrap">
+                                        <input type="submit" class="buttonWrap button-minimal grey-minimal contactSubmitButton" id="contactSubmitButton" value="CALCULATE GRADE & NOTIFY" data-formid="gradeForm" />
+                                    </div>
+                                </fieldset>
+                            </form>
+
+                          <!-- <div class="stat" id="gradeStatus">-->
+                                <h4 class="stat-left" id="err">Student's Grade is&nbsp&nbsp  </h4>
+                                <p class="stat-right" id="totalMarks">
+                                </p>
+                                
+                          <!--</div>-->
+							<div id="result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="decoration"></div>
+
+            <div class="container">
+                <div class="footer-socials"><img src="images/misc/logo.jpg" alt="logo" width="145" /></div>
+                <p class="center-text">&copy; 2015 - Team Invincible</p>
+            </div>
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>

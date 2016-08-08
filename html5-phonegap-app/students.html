@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!--Declare page as mobile friendly -->
+    <meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0" />
+    <!-- Declare page as iDevice WebApp friendly -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- iDevice WebApp Splash Screen, Regular Icon, iPhone, iPad, iPod Retina Icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/splash/splash-icon.png">
+    <!-- iPhone 3, 3Gs -->
+    <link rel="apple-touch-startup-image" href="images/splash/splash-screen.png" media="screen and (max-device-width: 320px)" />
+    <!-- iPhone 4 -->
+    <link rel="apple-touch-startup-image" href="images/splash/splash-screen%402x.png" media="(max-device-width: 480px) and (-webkit-min-device-pixel-ratio: 2)" />
+    <!-- iPhone 5 -->
+    <link rel="apple-touch-startup-image" sizes="640x1096" href="images/splash/splash-screen%403x.png" />
+
+    <!-- Page Title -->
+    <title>Easy Grade App </title>
+
+    <!-- Stylesheet Load -->
+    <link href="styles/style.css" rel="stylesheet" type="text/css">
+    <link href="styles/framework-style.css" rel="stylesheet" type="text/css">
+    <link href="styles/framework.css" rel="stylesheet" type="text/css">
+    <link href="styles/bxslider.css" rel="stylesheet" type="text/css">
+    <link href="styles/swipebox.css" rel="stylesheet" type="text/css">
+    <link href="styles/icons.css" rel="stylesheet" type="text/css">
+    <link href="styles/retina.css" rel="stylesheet" type="text/css" media="only screen and (-webkit-min-device-pixel-ratio: 2)" />
+
+
+    <!--Page Scripts Load -->
+    <script src="scripts/jquery.min.js" type="text/javascript"></script>
+    <script src="scripts/snap.js" type="text/javascript"></script>
+    <script src="scripts/hammer.js" type="text/javascript"></script>
+    <script src="scripts/jquery-ui-min.js" type="text/javascript"></script>
+    <script src="scripts/subscribe.js" type="text/javascript"></script>
+    <script src="scripts/contact.js" type="text/javascript"></script>
+    <script src="scripts/jquery.swipebox.js" type="text/javascript"></script>
+    <script src="scripts/bxslider.js" type="text/javascript"></script>
+    <script src="scripts/colorbox.js" type="text/javascript"></script>
+    <script src="scripts/retina.js" type="text/javascript"></script>
+    <script src="scripts/custom.js" type="text/javascript"></script>
+    <script src="scripts/framework.js" type="text/javascript"></script>
+	<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+   
+
+    <script>
+    $(document).on("pagebeforecreate", function() {
+
+        $.getJSON("http://zmehta.com/cmpe235-master-new/PHP code/get_student.php", function(data) {
+            //alert(JSON.stringify(data));
+            var items = [];
+            console.log(JSON.stringify(data));
+            $("#student_tbl tbody > tr").remove(); 
+            $.each(data, function(key, value) {
+                str = '<tr><td style="text-align: center">' + value.ID + '</td><td>' +value.FirstName + ' ' + value.LastName + '</td><td>' + value.Phone + '</td><td>' + value.EmailId + '</td><td>' + value.CourseName + '</td></tr>';
+                $('#student_tbl tbody').append(str);
+            });
+
+        });
+
+    });
+
+    </script>
+
+    <style>
+
+        table {          
+            font-size: 10px;
+            font-family: verdana;
+            background-color: #ffffcc;
+        }
+
+        td, th {
+            border: 1px solid white;
+            text-align: center;
+            background-color: #ffffcc;
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+
+    <div id="preloader">
+        <div id="status">
+            <p class="center-text">
+                Loading the content...
+                <em>Loading depends on your connection speed!</em>
+            </p>
+        </div>
+    </div>
+
+
+
+    <div class="all-elements">
+
+        <div id="sidebar" class="page-sidebar">
+            <div class="page-sidebar-scroll">
+
+                <a href="index.html" class="nav-icon home-icon">HOME</a>
+                <a href="grade.html" class="nav-icon blog-icon blog-icon-selected">GRADE</a>
+                <a href="settings.html" class="nav-icon jquery-icon">SETTING</a>
+                <a href="http://demos.jquerymobile.com/1.1.1/" class="nav-icon other-icon">HELP</a>
+                <a href="mail.html" class="nav-icon contact-icon">CONTACT US</a>
+                
+            </div>
+        </div>
+
+        <div id="content" class="page-content">
+            <div class="page-header">
+                <em class="deploy-sidebar"></em>
+                <img class="logo" width="85" />
+            </div>
+
+            <div class="container no-bottom">
+                <img class="center-icon" src="images/student.jpe" alt="img"><br>
+                <h1 class="center-text">Student's Information</h1>
+                <p class="center-text"></p>
+            </div>
+
+
+            <div class="decoration"></div>
+
+            <div class="container no-bottom">
+                
+                <table cellspacing="1" id="student_tbl">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone no.</th>
+                            <th>Email-ID</th>
+                            <th>Course Enrolled</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+                
+            </div>
+
+            <div class="decoration"></div>
+
+            <div class="container">
+                <div class="footer-socials"><img src="images/misc/logo.jpg" alt="logo" width="145" /></div>
+                <p class="center-text">&copy; 2015 - Team Invincible</p>
+            </div>
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
